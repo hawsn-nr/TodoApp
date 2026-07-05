@@ -1,106 +1,199 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo App</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
+
 <body>
 
 <div class="todo-container">
-    <h2>Todo App</h2>
 
-    <!-- CREATE -->
-    <form method="POST" action="{% url 'create_todo' %}">
-        {% csrf_token %}
-        <div class="input-group">
-            <input type="text"
-                   name="title"
-                   placeholder="Add your new todo"
-                   required>
-            <button type="submit" class="add-btn">+</button>
-        </div>
-    </form>
+    <!-- Header -->
+    <div class="header">
 
-    <!-- TASK LIST -->
-    {% for todo in todos %}
-    <div class="task {% if todo.done %}done-task{% endif %}">
-
-        <!-- DISPLAY -->
-        <div id="text-{{ todo.id }}" class="task-text">
-            {% if todo.done %}
-                ✅ <strong>Done</strong> -
-            {% endif %}
-            {{ todo.title }}
+        <div>
+            <h2>📝 Todo App</h2>
+            <p class="welcome">
+                Welcome back,
+                <strong>{{ request.user.username }}</strong>
+            </p>
         </div>
 
-        <!-- UPDATE -->
-        <form method="POST"
-              action="{% url 'update_todo' todo.id %}"
-              id="edit-{{ todo.id }}"
-              class="edit-form"
-              style="display:none;">
+        <form method="POST" action="{% url 'logout' %}">
             {% csrf_token %}
-            <input type="text"
-                   name="new_title"
-                   value="{{ todo.title }}"
-                   class="edit-input"
-                   required>
-
-            <button type="submit" class="btn btn-save">
-                ✔
+            <button type="submit" class="logout-btn">
+                Logout
             </button>
         </form>
 
-        <div class="btn-group">
+    </div>
 
-            <button type="button"
-                    onclick="enableEdit({{ todo.id }})"
-                    class="btn btn-edit">
-                ✏
+    <!-- Add Todo -->
+    <form method="POST" action="{% url 'create_todo' %}">
+        {% csrf_token %}
+
+        <div class="input-group">
+
+            <input
+                type="text"
+                name="title"
+                placeholder="What needs to be done?"
+                autocomplete="off"
+                required>
+
+            <button
+                type="submit"
+                class="add-btn">
+                +
             </button>
 
-            <!-- DONE / UNDONE -->
-            <form method="POST"
-                  action="{% url 'toggle_done' todo.id %}">
+        </div>
+    </form>
+
+    <!-- Todo List -->
+    {% for todo in todos %}
+
+    <div class="task {% if todo.done %}done-task{% endif %}">
+
+        <div class="task-info">
+
+            <!-- Display -->
+            <div id="text-{{ todo.id }}" class="task-text">
+
+                {{ todo.title }}
+
+                {% if todo.done %}
+                    <span class="status done">
+                        ✓ Done
+                    </span>
+                {% else %}
+                    <span class="status pending">
+                        Pending
+                    </span>
+                {% endif %}
+
+            </div>
+
+            <!-- Edit Form -->
+            <form
+                method="POST"
+                action="{% url 'update_todo' todo.id %}"
+                id="edit-{{ todo.id }}"
+                class="edit-form"
+                style="display:none;">
+
                 {% csrf_token %}
-                <button type="submit" class="btn">
+
+                <input
+                    type="text"
+                    name="new_title"
+                    value="{{ todo.title }}"
+                    class="edit-input"
+                    required>
+
+                <button
+                    type="submit"
+                    class="btn btn-save">
+                    ✔
+                </button>
+
+            </form>
+
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="btn-group">
+
+            <!-- Edit -->
+            <button
+                type="button"
+                class="btn btn-edit"
+                title="Edit"
+                onclick="enableEdit({{ todo.id }})">
+                ✏️
+            </button>
+
+            <!-- Done / Undone -->
+            <form
+                method="POST"
+                action="{% url 'toggle_done' todo.id %}">
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="btn btn-save"
+                    title="{% if todo.done %}Mark as Pending{% else %}Mark as Done{% endif %}">
+
                     {% if todo.done %}
                         ↩
                     {% else %}
-                        ✓
+                        ✔
                     {% endif %}
+
                 </button>
+
             </form>
 
-            <!-- DELETE -->
-            <form method="POST"
-                  action="{% url 'delete_todo' todo.id %}">
+            <!-- Delete -->
+            <form
+                method="POST"
+                action="{% url 'delete_todo' todo.id %}">
                 {% csrf_token %}
-                <button type="submit"
-                        class="btn btn-delete">
-                    🗑
+
+                <button
+                    type="submit"
+                    class="btn btn-delete"
+                    title="Delete">
+                    🗑️
                 </button>
+
             </form>
 
         </div>
 
     </div>
+
     {% empty %}
-        <p>No tasks yet.</p>
+
+    <div class="empty">
+
+        <h3>🎉 You're all caught up!</h3>
+
+        <p>
+            You don't have any tasks yet.<br>
+            Add your first task above.
+        </p>
+
+    </div>
+
     {% endfor %}
 
+    <!-- Footer -->
     <div class="footer">
-        <span>You have {{ task_count }} tasks</span>
+
+        <span>
+            📋 Total Tasks:
+            <strong>{{ todos_count }}</strong>
+        </span>
+
     </div>
+
 </div>
 
 <script>
+
 function enableEdit(id) {
+
     document.getElementById("text-" + id).style.display = "none";
     document.getElementById("edit-" + id).style.display = "flex";
+
 }
+
 </script>
 
 </body>

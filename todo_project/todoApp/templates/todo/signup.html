@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- Added viewport meta tag for mobile responsiveness -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Todo App</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+<div class="auth-container">
+
+    <div class="logo">
+        📝
+    </div>
+
+    <h2>Create Account</h2>
+
+    <p class="subtitle">
+        Join and organize your daily tasks.
+    </p>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <!-- Display non-field errors (e.g., general form errors) -->
+        {% if form.non_field_errors %}
+            <div class="error-box">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <label for="{{ form.username.id_for_label }}">
+            Username
+        </label>
+        {{ form.username }}
+        <!-- Display username specific errors -->
+        {% if form.username.errors %}
+            <small class="error">
+                {{ form.username.errors.0 }}
+            </small>
+        {% endif %}
+
+        <label for="{{ form.password1.id_for_label }}">
+            Password
+        </label>
+        {{ form.password1 }}
+        <!-- Display password1 specific errors -->
+        {% if form.password1.errors %}
+            <small class="error">
+                {{ form.password1.errors.0 }}
+            </small>
+        {% endif %}
+
+        <label for="{{ form.password2.id_for_label }}">
+            Confirm Password
+        </label>
+        {{ form.password2 }}
+        <!-- Display password2 specific errors -->
+        {% if form.password2.errors %}
+            <small class="error">
+                {{ form.password2.errors.0 }}
+            </small>
+        {% endif %}
+
+        <!-- Added type="submit" to ensure the button explicitly submits the form -->
+        <button type="submit" class="auth-btn">
+            Sign Up
+        </button>
+
+    </form>
+
+    <p class="switch-page">
+        Already have an account?
+        <a href="{% url 'login' %}">
+            Login
+        </a>
+    </p>
+
+</div>
+
+</body>
+</html>

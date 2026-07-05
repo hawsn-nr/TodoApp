@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 from django.conf.global_settings import STATICFILES_DIRS
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -124,14 +124,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "static"
-]
-RESTFRAMEWORK = {
+STATICFILES_DIRS = [BASE_DIR / "static"]
+REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
     ],
-    "DEFAUL_PERMISSION_CLASSES": [
-        "rest_framework.permission.IsAuthenticated",
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
     ],
 }
+LOGIN_URL = "login"
+
+LOGIN_REDIRECT_URL = "todo_list"
+
+LOGOUT_REDIRECT_URL = "login"
